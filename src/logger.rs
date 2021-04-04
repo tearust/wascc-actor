@@ -15,8 +15,7 @@ const DEBUG: u32 = 4;
 const TRACE: u32 = 5;
 
 lazy_static! {
-    static ref CURRENT_BINDING: Arc<RwLock<String>> =
-        { Arc::new(RwLock::new("default".to_string())) };
+    static ref CURRENT_BINDING: Arc<RwLock<String>> = Arc::new(RwLock::new("default".to_string()));
 }
 
 static LOGGER: AutomaticLoggerHostBinding = AutomaticLoggerHostBinding {};
@@ -71,6 +70,9 @@ impl log::Log for AutomaticLoggerHostBinding {
             let l = WriteLogRequest {
                 level: record.level() as _,
                 body: format!("{}", record.args()),
+                line: record.line().unwrap_or_default(),
+                file: record.file().unwrap_or("unknown file").to_string(),
+                target: record.target().to_string(),
             };
             self._log(l)
         }
@@ -90,10 +92,13 @@ impl AutomaticLoggerHostBinding {
     }
 
     /// Write a log entry on the host
-    pub fn log(&self, level: u32, body: &str) -> Result<()> {
+    pub fn log(&self, level: u32, body: &str, line: u32, file: &str, target: &str) -> Result<()> {
         let l = WriteLogRequest {
             level: level,
             body: body.to_string(),
+            line,
+            file: file.to_string(),
+            target: target.to_string(),
         };
         let _ = host_call(
             &CURRENT_BINDING.read().unwrap(),
@@ -105,10 +110,13 @@ impl AutomaticLoggerHostBinding {
     }
 
     /// Write a log entry at the error level. You should instead use the `error!` macro
-    pub fn error(&self, body: &str) -> Result<()> {
+    pub fn error(&self, body: &str, line: u32, file: &str, target: &str) -> Result<()> {
         let l = WriteLogRequest {
             level: ERROR,
             body: body.to_string(),
+            line,
+            file: file.to_string(),
+            target: target.to_string(),
         };
         let _ = host_call(
             &CURRENT_BINDING.read().unwrap(),
@@ -120,10 +128,13 @@ impl AutomaticLoggerHostBinding {
     }
 
     /// Write a log entry at the warn level. You should instead use the `warn!` macro
-    pub fn warn(&self, body: &str) -> Result<()> {
+    pub fn warn(&self, body: &str, line: u32, file: &str, target: &str) -> Result<()> {
         let l = WriteLogRequest {
             level: WARN,
             body: body.to_string(),
+            line,
+            file: file.to_string(),
+            target: target.to_string(),
         };
         let _ = host_call(
             &CURRENT_BINDING.read().unwrap(),
@@ -135,10 +146,13 @@ impl AutomaticLoggerHostBinding {
     }
 
     /// Write a log entry at the info level. You should instead use the `info!` macro
-    pub fn info(&self, body: &str) -> Result<()> {
+    pub fn info(&self, body: &str, line: u32, file: &str, target: &str) -> Result<()> {
         let l = WriteLogRequest {
             level: INFO,
             body: body.to_string(),
+            line,
+            file: file.to_string(),
+            target: target.to_string(),
         };
         let _ = host_call(
             &CURRENT_BINDING.read().unwrap(),
@@ -150,10 +164,13 @@ impl AutomaticLoggerHostBinding {
     }
 
     /// Write a log entry at the debug level. You should instead use the `debug!` macro
-    pub fn debug(&self, body: &str) -> Result<()> {
+    pub fn debug(&self, body: &str, line: u32, file: &str, target: &str) -> Result<()> {
         let l = WriteLogRequest {
             level: DEBUG,
             body: body.to_string(),
+            line,
+            file: file.to_string(),
+            target: target.to_string(),
         };
         let _ = host_call(
             &CURRENT_BINDING.read().unwrap(),
@@ -165,10 +182,13 @@ impl AutomaticLoggerHostBinding {
     }
 
     /// Write a log entry at the trace level. You should instead use the `trace!` macro
-    pub fn trace(&self, body: &str) -> Result<()> {
+    pub fn trace(&self, body: &str, line: u32, file: &str, target: &str) -> Result<()> {
         let l = WriteLogRequest {
             level: TRACE,
             body: body.to_string(),
+            line,
+            file: file.to_string(),
+            target: target.to_string(),
         };
         let _ = host_call(
             &CURRENT_BINDING.read().unwrap(),
