@@ -15,10 +15,10 @@ categories = ["wasm", "api-bindings"]
 maintenance = { status = "actively-developed" }
 
 [dependencies]
-wascc-codec = { path = "../wascc-codec" }
-wapc-guest = "0.3.1"
 serde_json = "1.0.51"
 serde_derive = "1.0.106"
 serde = "1.0.106"
 log = "0.4.8"
 lazy_static = "1.4.0"
+wapc-guest = { path = "../wapc-guest-rust" }
+wascc-codec = { path = "../wascc-codec" }
