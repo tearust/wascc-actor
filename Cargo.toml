@@ -20,5 +20,12 @@ serde_derive = "1.0.106"
 serde = "1.0.106"
 log = "0.4.8"
 lazy_static = "1.4.0"
+
+wapc-guest = { git = "https://github.com/tearust/wapc-guest-rust", branch = "nitro" }
+wascc-codec = { git = "https://github.com/tearust/wascc-codec", branch = "nitro" }
+
+[patch.'https://github.com/tearust/wapc-guest-rust']
 wapc-guest = { path = "../wapc-guest-rust" }
+[patch.'https://github.com/tearust/wascc-codec']
 wascc-codec = { path = "../wascc-codec" }
+
