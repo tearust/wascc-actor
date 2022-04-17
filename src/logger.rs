@@ -87,7 +87,7 @@ impl AutomaticLoggerHostBinding {
             &CURRENT_BINDING.read().unwrap(),
             CAPID_LOGGING,
             OP_LOG,
-            &serialize(req).unwrap(),
+            &serialize(&req).unwrap(),
         );
     }
 
@@ -104,7 +104,7 @@ impl AutomaticLoggerHostBinding {
             &CURRENT_BINDING.read().unwrap(),
             CAPID_LOGGING,
             OP_LOG,
-            &serialize(l)?,
+            &serialize(&l)?,
         );
         Ok(())
     }
@@ -122,7 +122,7 @@ impl AutomaticLoggerHostBinding {
             &CURRENT_BINDING.read().unwrap(),
             CAPID_LOGGING,
             OP_LOG,
-            &serialize(l)?,
+            &serialize(&l)?,
         );
         Ok(())
     }
@@ -140,7 +140,7 @@ impl AutomaticLoggerHostBinding {
             &CURRENT_BINDING.read().unwrap(),
             CAPID_LOGGING,
             OP_LOG,
-            &serialize(l)?,
+            &serialize(&l)?,
         );
         Ok(())
     }
@@ -158,7 +158,7 @@ impl AutomaticLoggerHostBinding {
             &CURRENT_BINDING.read().unwrap(),
             CAPID_LOGGING,
             OP_LOG,
-            &serialize(l)?,
+            &serialize(&l)?,
         );
         Ok(())
     }
@@ -176,7 +176,7 @@ impl AutomaticLoggerHostBinding {
             &CURRENT_BINDING.read().unwrap(),
             CAPID_LOGGING,
             OP_LOG,
-            &serialize(l)?,
+            &serialize(&l)?,
         );
         Ok(())
     }
@@ -194,7 +194,7 @@ impl AutomaticLoggerHostBinding {
             &CURRENT_BINDING.read().unwrap(),
             CAPID_LOGGING,
             OP_LOG,
-            &serialize(l)?,
+            &serialize(&l)?,
         );
         Ok(())
     }

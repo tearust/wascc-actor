@@ -34,14 +34,19 @@ impl EventStreamsHostBinding {
             values,
         };
 
-        host_call(&self.binding, CAPID_EVENTS, OP_WRITE_EVENT, &serialize(ev)?)
-            .map(|v| {
-                deserialize::<WriteResponse>(&v)
-                    .unwrap()
-                    .event_id
-                    .to_string()
-            })
-            .map_err(|e| e.into())
+        host_call(
+            &self.binding,
+            CAPID_EVENTS,
+            OP_WRITE_EVENT,
+            &serialize(&ev)?,
+        )
+        .map(|v| {
+            deserialize::<WriteResponse>(&v)
+                .unwrap()
+                .event_id
+                .to_string()
+        })
+        .map_err(|e| e.into())
     }
 
     /// Reads all available events from the given stream
@@ -62,7 +67,7 @@ impl EventStreamsHostBinding {
             &self.binding,
             CAPID_EVENTS,
             OP_QUERY_STREAM,
-            &serialize(query)?,
+            &serialize(&query)?,
         )
         .map(|v| {
             deserialize::<StreamResults>(v.as_ref())

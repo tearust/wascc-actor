@@ -56,7 +56,7 @@ impl KeyValueStoreHostBinding {
         let cmd = GetRequest {
             key: key.to_string(),
         };
-        host_call(&self.binding, CAPID_KEYVALUE, OP_GET, &serialize(cmd)?)
+        host_call(&self.binding, CAPID_KEYVALUE, OP_GET, &serialize(&cmd)?)
             .map(|vec| {
                 let resp = deserialize::<GetResponse>(vec.as_ref()).unwrap();
                 if resp.exists {
@@ -75,7 +75,7 @@ impl KeyValueStoreHostBinding {
             value: value.to_string(),
             expires_s: expires.unwrap_or(0) as _,
         };
-        host_call(&self.binding, CAPID_KEYVALUE, OP_SET, &serialize(cmd)?)
+        host_call(&self.binding, CAPID_KEYVALUE, OP_SET, &serialize(&cmd)?)
             .map(|_vec| ())
             .map_err(|e| e.into())
     }
@@ -86,7 +86,7 @@ impl KeyValueStoreHostBinding {
             key: key.to_string(),
             value,
         };
-        host_call(&self.binding, CAPID_KEYVALUE, OP_ADD, &serialize(cmd)?)
+        host_call(&self.binding, CAPID_KEYVALUE, OP_ADD, &serialize(&cmd)?)
             .map(|vec| {
                 let resp = deserialize::<AddResponse>(vec.as_ref()).unwrap();
                 resp.value
@@ -100,7 +100,7 @@ impl KeyValueStoreHostBinding {
             key: key.to_string(),
             value: item.to_string(),
         };
-        host_call(&self.binding, CAPID_KEYVALUE, OP_PUSH, &serialize(cmd)?)
+        host_call(&self.binding, CAPID_KEYVALUE, OP_PUSH, &serialize(&cmd)?)
             .map(|vec| {
                 let resp = deserialize::<ListResponse>(vec.as_ref()).unwrap();
                 resp.new_count as usize
@@ -114,12 +114,17 @@ impl KeyValueStoreHostBinding {
             key: key.to_string(),
             value: item.to_string(),
         };
-        host_call(&self.binding, CAPID_KEYVALUE, OP_LIST_DEL, &serialize(cmd)?)
-            .map(|vec| {
-                let resp = deserialize::<ListResponse>(vec.as_ref()).unwrap();
-                resp.new_count as usize
-            })
-            .map_err(|e| e.into())
+        host_call(
+            &self.binding,
+            CAPID_KEYVALUE,
+            OP_LIST_DEL,
+            &serialize(&cmd)?,
+        )
+        .map(|vec| {
+            let resp = deserialize::<ListResponse>(vec.as_ref()).unwrap();
+            resp.new_count as usize
+        })
+        .map_err(|e| e.into())
     }
 
     /// Removes the data associated with a given key, which can include lists or sets
@@ -127,7 +132,7 @@ impl KeyValueStoreHostBinding {
         let cmd = DelRequest {
             key: key.to_string(),
         };
-        host_call(&self.binding, CAPID_KEYVALUE, OP_DEL, &serialize(cmd)?)
+        host_call(&self.binding, CAPID_KEYVALUE, OP_DEL, &serialize(&cmd)?)
             .map(|_vec| ())
             .map_err(|e| e.into())
     }
@@ -144,7 +149,7 @@ impl KeyValueStoreHostBinding {
             start: start as i32,
             stop: stop_inclusive as i32,
         };
-        host_call(&self.binding, CAPID_KEYVALUE, OP_RANGE, &serialize(cmd)?)
+        host_call(&self.binding, CAPID_KEYVALUE, OP_RANGE, &serialize(&cmd)?)
             .map(|vec| {
                 let resp = deserialize::<ListRangeResponse>(vec.as_ref()).unwrap();
                 resp.values
@@ -157,7 +162,7 @@ impl KeyValueStoreHostBinding {
         let cmd = ListClearRequest {
             key: key.to_string(),
         };
-        host_call(&self.binding, CAPID_KEYVALUE, OP_CLEAR, &serialize(cmd)?)
+        host_call(&self.binding, CAPID_KEYVALUE, OP_CLEAR, &serialize(&cmd)?)
             .map(|_vec| ())
             .map_err(|e| e.into())
     }
@@ -168,7 +173,7 @@ impl KeyValueStoreHostBinding {
             key: key.to_string(),
             value: value.to_string(),
         };
-        host_call(&self.binding, CAPID_KEYVALUE, OP_SET_ADD, &serialize(cmd)?)
+        host_call(&self.binding, CAPID_KEYVALUE, OP_SET_ADD, &serialize(&cmd)?)
             .map(|vec| {
                 let resp = deserialize::<SetOperationResponse>(vec.as_ref()).unwrap();
                 resp.new_count as usize
@@ -186,7 +191,7 @@ impl KeyValueStoreHostBinding {
             &self.binding,
             CAPID_KEYVALUE,
             OP_SET_REMOVE,
-            &serialize(cmd)?,
+            &serialize(&cmd)?,
         )
         .map(|vec| {
             let resp = deserialize::<SetOperationResponse>(vec.as_ref()).unwrap();
@@ -202,7 +207,7 @@ impl KeyValueStoreHostBinding {
             &self.binding,
             CAPID_KEYVALUE,
             OP_SET_UNION,
-            &serialize(cmd)?,
+            &serialize(&cmd)?,
         )
         .map(|vec| {
             let resp = deserialize::<SetQueryResponse>(vec.as_ref()).unwrap();
@@ -218,7 +223,7 @@ impl KeyValueStoreHostBinding {
             &self.binding,
             CAPID_KEYVALUE,
             OP_SET_INTERSECT,
-            &serialize(cmd)?,
+            &serialize(&cmd)?,
         )
         .map(|vec| {
             let resp = deserialize::<SetQueryResponse>(vec.as_ref()).unwrap();
@@ -236,7 +241,7 @@ impl KeyValueStoreHostBinding {
             &self.binding,
             CAPID_KEYVALUE,
             OP_SET_QUERY,
-            &serialize(cmd)?,
+            &serialize(&cmd)?,
         )
         .map(|vec| {
             let resp = deserialize::<SetQueryResponse>(vec.as_ref()).unwrap();
@@ -255,7 +260,7 @@ impl KeyValueStoreHostBinding {
             &self.binding,
             CAPID_KEYVALUE,
             OP_KEY_EXISTS,
-            &serialize(cmd)?,
+            &serialize(&cmd)?,
         )
         .map(|vec| {
             let resp = deserialize::<GetResponse>(vec.as_ref()).unwrap();

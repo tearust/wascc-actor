@@ -40,7 +40,7 @@ impl ExtrasHostBinding {
             &self.binding,
             CAPID_EXTRAS,
             OP_REQUEST_RANDOM,
-            &serialize(cmd)?,
+            &serialize(&cmd)?,
         )
         .map(|v| deserialize::<GeneratorResult>(v.as_ref()).unwrap())
         .map(|r| r.random_number)
@@ -60,7 +60,7 @@ impl ExtrasHostBinding {
             &self.binding,
             CAPID_EXTRAS,
             OP_REQUEST_GUID,
-            &serialize(cmd)?,
+            &serialize(&cmd)?,
         )
         .map(|v| deserialize::<GeneratorResult>(v.as_ref()).unwrap())
         .map(|r| r.guid.unwrap_or("none".to_string()))
@@ -81,7 +81,7 @@ impl ExtrasHostBinding {
             &self.binding,
             CAPID_EXTRAS,
             OP_REQUEST_SEQUENCE,
-            &serialize(cmd)?,
+            &serialize(&cmd)?,
         )
         .map(|v| deserialize::<GeneratorResult>(v.as_ref()).unwrap())
         .map(|r| r.sequence_number)

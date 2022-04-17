@@ -43,11 +43,12 @@
 #[macro_use]
 extern crate lazy_static;
 
-pub type Result<T> = ::std::result::Result<T, crate::errors::Error>;
-pub type HandlerResult<T> = ::std::result::Result<T, Box<dyn std::error::Error>>;
+pub type Result<T> = TeaResult<T>;
+pub type HandlerResult<T> = TeaResult<T>;
 
 pub extern crate wapc_guest as wapc;
 
+use tea_codec::error::TeaResult;
 use wapc_guest::console_log;
 
 /// Actor developers will use this macro to set up their operation handlers
@@ -55,15 +56,15 @@ use wapc_guest::console_log;
 macro_rules! actor_handlers(
     { $($key:path => $user_handler:ident),* } => {
         use $crate::wapc::prelude::*;
+        use tea_codec::error::code::wascc::{new_wascc_error_code, BAD_DISPATCH};
 
         wapc_handler!(handle_wapc);
         fn handle_wapc(operation: &str, msg: &[u8]) -> CallResult {
             $crate::logger::ensure_logger();
             match operation {
                 $( $key => $user_handler(deserialize(msg)?)
-                            .and_then(|r| serialize(r))
-                            .map_err(|e| e.into()), )*
-                _ => Err("bad dispatch".into())
+                            .and_then(|r| serialize(&r)), )*
+                _ => Err(new_wascc_error_code(BAD_DISPATCH).to_error_code(None, None))
             }
         }
 

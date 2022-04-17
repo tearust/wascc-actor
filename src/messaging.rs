@@ -58,7 +58,7 @@ impl MessageBrokerHostBinding {
             &self.binding,
             CAPID_MESSAGING,
             OP_PUBLISH_MESSAGE,
-            &serialize(cmd)?,
+            &serialize(&cmd)?,
         )
         .map_err(|e| e.into())
         .map(|_vec| ())
@@ -78,7 +78,7 @@ impl MessageBrokerHostBinding {
             &self.binding,
             CAPID_MESSAGING,
             OP_PERFORM_REQUEST,
-            &serialize(cmd)?,
+            &serialize(&cmd)?,
         )
         .map_err(|e| e.into())
     }

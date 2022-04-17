@@ -46,7 +46,7 @@ impl ObjectStoreHostBinding {
             &self.binding,
             CAPID_BLOBSTORE,
             OP_CREATE_CONTAINER,
-            &serialize(cmd)?,
+            &serialize(&cmd)?,
         )
         .map(|v| deserialize::<Container>(v.as_ref()).unwrap())
         .map_err(|e| e.into())
@@ -62,7 +62,7 @@ impl ObjectStoreHostBinding {
             &self.binding,
             CAPID_BLOBSTORE,
             OP_REMOVE_CONTAINER,
-            &serialize(cmd)?,
+            &serialize(&cmd)?,
         )
         .map(|_v| ())
         .map_err(|e| e.into())
@@ -79,7 +79,7 @@ impl ObjectStoreHostBinding {
             &self.binding,
             CAPID_BLOBSTORE,
             OP_REMOVE_OBJECT,
-            &serialize(cmd)?,
+            &serialize(&cmd)?,
         )
         .map(|_v| ())
         .map_err(|e| e.into())
@@ -94,7 +94,7 @@ impl ObjectStoreHostBinding {
             &self.binding,
             CAPID_BLOBSTORE,
             OP_LIST_OBJECTS,
-            &serialize(cmd)?,
+            &serialize(&cmd)?,
         )
         .map(|v| deserialize::<BlobList>(v.as_ref()).unwrap())
         .map_err(|e| e.into())
@@ -111,7 +111,7 @@ impl ObjectStoreHostBinding {
             &self.binding,
             CAPID_BLOBSTORE,
             OP_GET_OBJECT_INFO,
-            &serialize(cmd)?,
+            &serialize(&cmd)?,
         )
         .map(|v| {
             let b = deserialize::<Blob>(v.as_ref()).unwrap();
@@ -148,7 +148,7 @@ impl ObjectStoreHostBinding {
             &self.binding,
             CAPID_BLOBSTORE,
             OP_START_UPLOAD,
-            &serialize(cmd)?,
+            &serialize(&cmd)?,
         )
         .map(|_v| transfer)
         .map_err(|e| e.into())
@@ -174,7 +174,7 @@ impl ObjectStoreHostBinding {
             &self.binding,
             CAPID_BLOBSTORE,
             OP_UPLOAD_CHUNK,
-            &serialize(cmd)?,
+            &serialize(&cmd)?,
         )
         .map(|_v| ())
         .map_err(|e| e.into())
@@ -200,7 +200,7 @@ impl ObjectStoreHostBinding {
             &self.binding,
             CAPID_BLOBSTORE,
             OP_START_DOWNLOAD,
-            &serialize(cmd)?,
+            &serialize(&cmd)?,
         )
         .map(|_v| transfer)
         .map_err(|e| e.into())
