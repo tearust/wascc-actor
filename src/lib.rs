@@ -56,7 +56,7 @@ use wapc_guest::console_log;
 macro_rules! actor_handlers(
     { $($key:path => $user_handler:ident),* } => {
         use $crate::wapc::prelude::*;
-        use tea_codec::error::code::wascc::{new_wascc_error_code, BAD_DISPATCH};
+        use tea_codec::error::{new_wascc_error_code, WasccCode};
 
         wapc_handler!(handle_wapc);
         fn handle_wapc(operation: &str, msg: &[u8]) -> CallResult {
@@ -64,7 +64,7 @@ macro_rules! actor_handlers(
             match operation {
                 $( $key => $user_handler(deserialize(msg)?)
                             .and_then(|r| serialize(&r)), )*
-                _ => Err(new_wascc_error_code(BAD_DISPATCH).to_error_code(None, None))
+                _ => Err(new_wascc_error_code(WasccCode::BadDispatch).to_error_code(None, None))
             }
         }
 

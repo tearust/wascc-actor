@@ -18,14 +18,9 @@
 
 use std::error::Error as StdError;
 use std::fmt;
-use tea_codec::error::code::common::{
-    new_common_error_code, JSON_MARSHALING_ERROR, UTF8_ENCODING_ERROR, UTF8_STR_ENCODING_ERROR,
+use tea_codec::error::{
+    new_common_error_code, new_wascc_error_code, CommonCode, TeaError, WasccCode,
 };
-use tea_codec::error::code::wascc::{
-    new_wascc_error_code, BAD_DISPATCH, ENV_VAR_ERROR, GENERAL_HOST_ERROR, KEY_VALUE_ERROR,
-    MESSAGING_ERROR, WAPC_GENERAL_ERROR, WASM_MISC,
-};
-use tea_codec::error::TeaError;
 
 #[derive(Debug)]
 pub struct Error(Box<ErrorKind>);
@@ -62,34 +57,32 @@ impl Into<TeaError> for Error {
     fn into(self) -> TeaError {
         match *self.0 {
             ErrorKind::KeyValueError(s) => {
-                new_wascc_error_code(KEY_VALUE_ERROR).to_error_code(Some(s), None)
+                new_wascc_error_code(WasccCode::KeyValueError).to_error_code(Some(s), None)
             }
-            ErrorKind::UTF8(e) => new_wascc_error_code(UTF8_ENCODING_ERROR)
+            ErrorKind::UTF8(e) => new_common_error_code(CommonCode::UTF8EncodingError)
                 .to_error_code(Some(format!("{:?}", e)), None),
             ErrorKind::MessagingError(s) => {
-                new_wascc_error_code(MESSAGING_ERROR).to_error_code(Some(s), None)
+                new_wascc_error_code(WasccCode::MessagingError).to_error_code(Some(s), None)
             }
-            ErrorKind::EnvVar(e) => {
-                new_wascc_error_code(ENV_VAR_ERROR).to_error_code(Some(format!("{:?}", e)), None)
-            }
-            ErrorKind::JsonMarshaling(e) => new_common_error_code(JSON_MARSHALING_ERROR)
+            ErrorKind::EnvVar(e) => new_wascc_error_code(WasccCode::EnvVarError)
                 .to_error_code(Some(format!("{:?}", e)), None),
-            ErrorKind::UTF8Str(e) => new_common_error_code(UTF8_STR_ENCODING_ERROR)
+            ErrorKind::JsonMarshaling(e) => new_common_error_code(CommonCode::JsonMarshalingError)
+                .to_error_code(Some(format!("{:?}", e)), None),
+            ErrorKind::UTF8Str(e) => new_common_error_code(CommonCode::Utf8StrEncodingError)
                 .to_error_code(Some(format!("{:?}", e)), None),
             ErrorKind::HostError(s) => {
-                new_wascc_error_code(GENERAL_HOST_ERROR).to_error_code(Some(s), None)
+                new_wascc_error_code(WasccCode::GeneralHostError).to_error_code(Some(s), None)
             }
             ErrorKind::BadDispatch(s) => {
-                new_wascc_error_code(BAD_DISPATCH).to_error_code(Some(s), None)
+                new_wascc_error_code(WasccCode::BadDispatch).to_error_code(Some(s), None)
             }
             ErrorKind::WapcError(e) => {
                 let inner: TeaError = e.into();
-                new_wascc_error_code(WAPC_GENERAL_ERROR)
+                new_wascc_error_code(WasccCode::WapcGeneralError)
                     .to_error_code(None, inner.parse_error_code())
             }
-            ErrorKind::MiscError(e) => {
-                new_wascc_error_code(WASM_MISC).to_error_code(Some(format!("{:?}", e)), None)
-            }
+            ErrorKind::MiscError(e) => new_wascc_error_code(WasccCode::WasmMisc)
+                .to_error_code(Some(format!("{:?}", e)), None),
         }
     }
 }
