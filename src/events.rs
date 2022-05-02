@@ -41,7 +41,7 @@ impl EventStreamsHostBinding {
             &serialize(&ev)?,
         )
         .map(|v| {
-            deserialize::<WriteResponse>(&v)
+            deserialize::<WriteResponse, &[u8]>(&v)
                 .unwrap()
                 .event_id
                 .to_string()
@@ -70,7 +70,7 @@ impl EventStreamsHostBinding {
             &serialize(&query)?,
         )
         .map(|v| {
-            deserialize::<StreamResults>(v.as_ref())
+            deserialize::<StreamResults, &[u8]>(v.as_ref())
                 .unwrap()
                 .events
                 .clone()
