@@ -42,10 +42,7 @@ impl ExtrasHostBinding {
             OP_REQUEST_RANDOM,
             &serialize(&cmd)?,
         )
-        .map(|v| {
-            let g: GeneratorResult = deserialize(&v).unwrap();
-            g
-        })
+        .map(|v| deserialize::<GeneratorResult, &[u8]>(v.as_ref()).unwrap())
         .map(|r| r.random_number)
         .map_err(|e| e.into())
     }
@@ -65,10 +62,7 @@ impl ExtrasHostBinding {
             OP_REQUEST_GUID,
             &serialize(&cmd)?,
         )
-        .map(|v| {
-            let g: GeneratorResult = deserialize(&v).unwrap();
-            g
-        })
+        .map(|v| deserialize::<GeneratorResult, &[u8]>(v.as_ref()).unwrap())
         .map(|r| r.guid.unwrap_or("none".to_string()))
         .map_err(|e| e.into())
     }
@@ -89,10 +83,7 @@ impl ExtrasHostBinding {
             OP_REQUEST_SEQUENCE,
             &serialize(&cmd)?,
         )
-        .map(|v| {
-            let g: GeneratorResult = deserialize(&v).unwrap();
-            g
-        })
+        .map(|v| deserialize::<GeneratorResult, &[u8]>(v.as_ref()).unwrap())
         .map(|r| r.sequence_number)
         .map_err(|e| e.into())
     }
