@@ -48,7 +48,10 @@ impl ObjectStoreHostBinding {
             OP_CREATE_CONTAINER,
             &serialize(&cmd)?,
         )
-        .map(|v| deserialize::<Container>(v.as_ref()).unwrap())
+        .map(|v| {
+            let c: Container = deserialize(&v).unwrap();
+            c
+        })
         .map_err(|e| e.into())
     }
 
@@ -96,7 +99,10 @@ impl ObjectStoreHostBinding {
             OP_LIST_OBJECTS,
             &serialize(&cmd)?,
         )
-        .map(|v| deserialize::<BlobList>(v.as_ref()).unwrap())
+        .map(|v| {
+            let b: BlobList = deserialize(&v).unwrap();
+            b
+        })
         .map_err(|e| e.into())
     }
 
@@ -114,7 +120,7 @@ impl ObjectStoreHostBinding {
             &serialize(&cmd)?,
         )
         .map(|v| {
-            let b = deserialize::<Blob>(v.as_ref()).unwrap();
+            let b: Blob = deserialize(&v).unwrap();
             if b.id.is_empty() {
                 None
             } else {

@@ -16,8 +16,6 @@
 //!
 //! This module contains types and utility functions for error handling
 
-use std::error::Error as StdError;
-use std::fmt;
 use tea_codec::error::{
     new_common_error_code, new_wascc_error_code, CommonCode, TeaError, WasccCode,
 };
@@ -83,55 +81,6 @@ impl Into<TeaError> for Error {
             }
             ErrorKind::MiscError(e) => new_wascc_error_code(WasccCode::WasmMisc)
                 .to_error_code(Some(format!("{:?}", e)), None),
-        }
-    }
-}
-
-impl StdError for Error {
-    fn description(&self) -> &str {
-        match *self.0 {
-            ErrorKind::KeyValueError(_) => "Key/value store error",
-            ErrorKind::UTF8(_) => "UTF8 encoding failure",
-            ErrorKind::MessagingError(_) => "Messaging error",
-            ErrorKind::EnvVar(_) => "Environment variable error",
-            ErrorKind::JsonMarshaling(_) => "JSON encoding/decoding failure",
-            ErrorKind::UTF8Str(_) => "UTF8 encoding failure",
-            ErrorKind::HostError(_) => "Host Error",
-            ErrorKind::BadDispatch(_) => "Bad dispatch",
-            ErrorKind::WapcError(_) => "waPC failure",
-            ErrorKind::MiscError(_) => "Misc error",
-        }
-    }
-
-    fn cause(&self) -> Option<&dyn StdError> {
-        match *self.0 {
-            ErrorKind::KeyValueError(_) => None,
-            ErrorKind::UTF8(ref e) => Some(e),
-            ErrorKind::MessagingError(_) => None,
-            ErrorKind::EnvVar(ref e) => Some(e),
-            ErrorKind::JsonMarshaling(ref e) => Some(e),
-            ErrorKind::UTF8Str(ref e) => Some(e),
-            ErrorKind::HostError(_) => None,
-            ErrorKind::BadDispatch(_) => None,
-            ErrorKind::WapcError(ref e) => Some(e),
-            ErrorKind::MiscError(_) => None,
-        }
-    }
-}
-
-impl fmt::Display for Error {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match *self.0 {
-            ErrorKind::KeyValueError(ref msg) => write!(f, "Key/Value error: {}", msg),
-            ErrorKind::UTF8(ref e) => write!(f, "UTF8 encoding error: {}", e),
-            ErrorKind::MessagingError(ref msg) => write!(f, "Messaging error: {}", msg),
-            ErrorKind::EnvVar(ref e) => write!(f, "Environment variable error: {}", e),
-            ErrorKind::JsonMarshaling(ref e) => write!(f, "JSON marshaling error: {}", e),
-            ErrorKind::UTF8Str(ref e) => write!(f, "UTF8 error: {}", e),
-            ErrorKind::HostError(ref e) => write!(f, "Host error: {}", e),
-            ErrorKind::BadDispatch(ref e) => write!(f, "Bad dispatch, attempted operation: {}", e),
-            ErrorKind::WapcError(ref e) => write!(f, "waPC error: {}", e),
-            ErrorKind::MiscError(ref e) => write!(f, "Misc error: {}", e),
         }
     }
 }
