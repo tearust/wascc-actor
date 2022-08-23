@@ -40,31 +40,32 @@
 //! }
 //! ```
 
+#![feature(generic_associated_types)]
+#![feature(min_specialization)]
+
 #[macro_use]
 extern crate lazy_static;
 
-pub type Result<T> = TeaResult<T>;
-pub type HandlerResult<T> = TeaResult<T>;
+pub type Result<T> = error::Result<T>;
+pub type HandlerResult<T> = wapc_guest::error::Result<T>;
 
 pub extern crate wapc_guest as wapc;
 
-use tea_codec::error::TeaResult;
 use wapc_guest::console_log;
 
 /// Actor developers will use this macro to set up their operation handlers
 #[macro_export]
 macro_rules! actor_handlers(
     { $($key:path => $user_handler:ident),* } => {
-        use $crate::wapc::prelude::*;
-        use tea_codec::error::{new_wascc_error_code, WasccCode};
+        use $crate::wapc::{prelude::*, error::BadDispatch};
 
         wapc_handler!(handle_wapc);
         fn handle_wapc(operation: &str, msg: &[u8]) -> CallResult {
             $crate::logger::ensure_logger();
             match operation {
                 $( $key => $user_handler(deserialize(msg)?)
-                            .and_then(|r| serialize(&r)), )*
-                _ => Err(new_wascc_error_code(WasccCode::BadDispatch).to_error_code(None, None))
+                            .and_then(|r| serialize(&r).map_err(From::from)), )*
+                _ => Err(BadDispatch("Bad dispatch".to_string()).into())
             }
         }
 
@@ -76,7 +77,7 @@ pub fn println(msg: &str) {
     console_log(msg)
 }
 
-pub mod errors;
+pub mod error;
 pub mod events;
 pub mod extras;
 pub mod keyvalue;

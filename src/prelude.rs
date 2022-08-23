@@ -18,7 +18,6 @@ pub use crate::actor_handlers;
 pub use crate::println;
 pub use wascc_codec as codec;
 
-pub use crate::errors;
 pub use crate::wapc::prelude::CallResult;
 pub use crate::HandlerResult;
 pub use crate::{events, extras, keyvalue, logger, messaging, objectstore, untyped};
